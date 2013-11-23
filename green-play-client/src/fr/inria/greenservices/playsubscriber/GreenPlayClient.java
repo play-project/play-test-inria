@@ -17,10 +17,13 @@
 
 package fr.inria.greenservices.playsubscriber;
 
+/**
+ * @author Iyad Alshabani
+ */
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import javax.xml.namespace.QName;
@@ -52,9 +55,6 @@ import fr.inria.eventcloud.api.Quadruple;
 import fr.inria.eventcloud.api.Quadruple.SerializationFormat;
 import fr.inria.eventcloud.utils.RDFReader;
 
-
-
-
 //import eu.play_project.dcep.distributedetalis.utils.EventCloudHelpers;
 //import eu.play_project.play_eventadapter.AbstractReceiver;
 import eu.play_project.play_commons.eventformat.EventFormatHelpers;
@@ -64,20 +64,20 @@ import eu.play_project.play_commons.eventformat.EventFormatHelpers;
  * The Class GreenPlayClient.
  */
 public class GreenPlayClient {
-	private final static Logger logger =
-            LoggerFactory.getLogger(GreenPlayClient.class);
+	private final static Logger logger = LoggerFactory
+			.getLogger(GreenPlayClient.class);
 	// private String SubscriberEndPoint = null;
-	
+
 	/** The Constant producer. */
-	//private static final String producer = null;
-	
+	// private static final String producer = null;
+
 	/** The started. */
-	protected static boolean started=false;
+	protected static boolean started = false;
 
 	// private CXFExposer exposer;
 	/** The server. */
-	private Service server=null;
-	
+	private Service server = null;
+
 	/** The new sub id. */
 	private String subscriptionId;
 
@@ -87,7 +87,7 @@ public class GreenPlayClient {
 
 	protected String polluant;
 
-	protected static String mode="mail";
+	protected static String mode = "mail";
 
 	public String getSubscriptionId() {
 		return subscriptionId;
@@ -97,15 +97,17 @@ public class GreenPlayClient {
 		this.subscriptionId = subscriptionId;
 	}
 
-	//private static final int waitForResults = 5 * 60;
+	// private static final int waitForResults = 5 * 60;
 
 	// private QName topic;
 
 	/**
 	 * The main method.
-	 *
-	 * @param args the arguments
-	 * @throws Exception the exception
+	 * 
+	 * @param args
+	 *            the arguments
+	 * @throws Exception
+	 *             the exception
 	 */
 	public static void main(String[] args) throws Exception {
 
@@ -115,17 +117,18 @@ public class GreenPlayClient {
 		// "http://46.105.181.221:8080/registry/RegistryService";
 
 		String subscriberEndpoint = "http://localhost:8199/pubsubmgs/service";
-		if (args.length<1){
+		if (args.length < 1) {
 			System.err.println("Usage GreenPlayClient Endpoint <MODE>");
-			System.err.println("MODE= mail|sms, if not given  the defail valu is mail");
+			System.err
+					.println("MODE= mail|sms, if not given  the defail valu is mail");
 			System.exit(-1);
+		} else {
+			subscriberEndpoint = args[0];
+			if (args.length == 2)
+				mode = args[1];
+
 		}
-		else {
-		subscriberEndpoint=args[0];
-		if (args.length==2) mode=args[1];
-		
-		}
-		
+
 		String playServiceEndpoint = "http://138.96.19.115:8080/play/registry/RegistryService";
 
 		Topic topic = new Topic();
@@ -153,7 +156,6 @@ public class GreenPlayClient {
 
 		final AtomicLong counter = new AtomicLong(0);
 
-		
 		GreenPlayClient gpc = new GreenPlayClient();
 		// gpc.SubscriberEndPoint=
 		// "http://greenservices.inria.fr:8199/pubsubmgs/service";
@@ -168,20 +170,23 @@ public class GreenPlayClient {
 		System.out.println("Subscribed : " + result);
 		gpc.setSubscriptionId(result.getId());
 
-		// you will now receive notification on your endpoint when they areah 
+		// you will now receive notification on your endpoint when they areah
 		// published to the EC by the CEP.
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				System.out.println("Shutting down...");				
-				System.out.println("Try to unsubscribe from "+result.getId()+ " from this provide"+result.getProvider());
+				System.out.println("Shutting down...");
+				System.out.println("Try to unsubscribe from " + result.getId()
+						+ " from this provide" + result.getProvider());
 				try {
-					if (client.getSubscriptionService().unsubscribe(result, result.getProvider())){
+					if (client.getSubscriptionService().unsubscribe(result,
+							result.getProvider())) {
 						System.out.println("Suceeded to unsubscribed");
-						
-					}
-					else System.out.println("********************* unsubscribe Failed ");
+
+					} else
+						System.out
+								.println("********************* unsubscribe Failed ");
 				} catch (GovernanceExeption e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -189,7 +194,6 @@ public class GreenPlayClient {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-					
 
 				synchronized (GreenPlayClient.class) {
 					started = false;
@@ -209,15 +213,18 @@ public class GreenPlayClient {
 				System.out.println("Got InterruptedException.");
 			}
 		}
-		
+
 		GreenPlayClient.class.wait();
 	}
+
 	/**
 	 * Start server.
-	 *
-	 * @param subscriberEndPointAddress the subscriber end point address on which the service run  
-	 * @param counter the counter of how many notifications received
-	 * @return the service object 
+	 * 
+	 * @param subscriberEndPointAddress
+	 *            the subscriber end point address on which the service run
+	 * @param counter
+	 *            the counter of how many notifications received
+	 * @return the service object
 	 */
 	private Service startServer(final String subscriberEndPointAddress,
 			final AtomicLong counter) {
@@ -225,7 +232,7 @@ public class GreenPlayClient {
 
 		// local address which will receive notifications
 		System.out
-		.println("Creating service which will receive notification messages from the DSB...");
+				.println("Creating service which will receive notification messages from the DSB...");
 
 		QName interfaceName = new QName("http://docs.oasis-open.org/wsn/bw-2",
 				"NotificationConsumer");
@@ -235,67 +242,64 @@ public class GreenPlayClient {
 				"NotificationConsumerPort");
 		// expose the service
 		INotificationConsumer consumer = new INotificationConsumer() {
-//			private final AbstractReceiver rdfParser = new AbstractReceiver() {
-//			};
-
-		
+			// private final AbstractReceiver rdfParser = new AbstractReceiver()
+			// {
+			// };
 
 			public void notify(Notify notify) throws WsnbException {
-			
+
 				NotificationMessageHolderType notificationMessage = notify
 						.getNotificationMessage().get(0);
 
 				InputStream is = new ByteArrayInputStream(EventFormatHelpers
 						.unwrapFromDomNativeMessageElement(
 								(Element) notificationMessage.getMessage()
-								.getAny()).getBytes());
+										.getAny()).getBytes());
 
 				/*
-				 * FIXME to be fixed by GrreenServices server to be able to use the content of the event 
+				 * FIXME to be fixed by GrreenServices server to be able to use
+				 * the content of the event
 				 * 
-				 * Iterating on the event and get the values it needs 
-				 * 
+				 * Iterating on the event and get the values it needs
 				 */
-				
-				CompoundEvent initialEvent =
-		                new CompoundEvent(RDFReader.read(is,
-		                        SerializationFormat.TriG));
+
+				CompoundEvent initialEvent = new CompoundEvent(RDFReader.read(
+						is, SerializationFormat.TriG));
 				getValuesFromQuadruple(initialEvent, "idUser");
 				getValuesFromQuadruple(initialEvent, "pollutionRate");
 				getValuesFromQuadruple(initialEvent, "polluant");
-									
-				
+
 				logger.info("Initial quadruples are:");
-		        logInfo(initialEvent);
-		        //logger.info("Hashmap is used and the map <predicate, value> is ", getPredicateValuesMap().toString());
-		        
-		        userId=getPredicateValuesMap().get("idUser");
-		        
-		        System.out.println("***\n \n ***\n Got a PollutionAlert to the user *************** "
-		        		+ "******************************************"
-		        		+ "******************************************: {} --- {} --- {}"+userId);
-				//);
-		        
-		        GreenservicesPHPAdapter.sendToMGS(userId,mode);
-				
-				
+				logInfo(initialEvent);
+				// logger.info("Hashmap is used and the map <predicate, value> is ",
+				// getPredicateValuesMap().toString());
+
+				userId = getPredicateValuesMap().get("idUser");
+
 				System.out
-				.println(String
-						.format("Got a notify on HTTP service #%s, this notification comes from the DSB itself...",
-								counter.incrementAndGet()));
+						.println("***\n \n ***\n Got a PollutionAlert to the user *************** "
+								+ "******************************************"
+								+ "******************************************: {} --- {} --- {}"
+								+ userId);
+				// );
+
+				GreenservicesPHPAdapter.sendToMGS(userId, mode);
+
+				System.out
+						.println(String
+								.format("Got a notify on HTTP service #%s, this notification comes from the DSB itself...",
+										counter.incrementAndGet()));
 
 				Document dom = Wsnb4ServUtils.getWsnbWriter().writeNotifyAsDOM(
 						notify);
 
-
-				
 				System.out.println("==============================");
 				try {
 					XMLHelper.writeDocument(dom, System.out);
 				} catch (TransformerException e) {
 				}
 				System.out.println("==============================");
-				
+
 			}
 		};
 		NotificationConsumerService service = new NotificationConsumerService(
@@ -308,7 +312,7 @@ public class GreenPlayClient {
 			server = exposer.expose(service);
 			server.start();
 			System.out
-			.println("Local server is started and is ready to receive notifications");
+					.println("Local server is started and is ready to receive notifications");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -317,40 +321,44 @@ public class GreenPlayClient {
 
 	}
 
-		private static void logInfo(CompoundEvent event) {
-        for (Quadruple quad : event) {
-            logger.info(quad.toString());
-        }
-    }
-		// add the value and it's key into a map for this Event 
-		private void getValuesFromQuadruple(CompoundEvent quads, String key){
-			HashMap<String, String> predval = this.getPredicateValuesMap();
-			for (Quadruple quadruple : quads) {
-				if (quadruple.getPredicate().getURI().toString().contains(key)){
-					if (quadruple.getObject().isLiteral()){
-						predval.put(key, quadruple.getObject().getLiteral().toString());
-						System.out.println("getting ---"+quadruple.getObject().getLiteral().toString());
-						}
-					if (quadruple.getObject().isURI()){
-						predval.put(key,quadruple.getObject().getURI().toString());
-						System.out.println("getting --- "+quadruple.getObject().getURI().toString());
-					}
-						
+	private static void logInfo(CompoundEvent event) {
+		for (Quadruple quad : event) {
+			logger.info(quad.toString());
+		}
+	}
+
+	// add the value and it's key into a map for this Event
+	private void getValuesFromQuadruple(CompoundEvent quads, String key) {
+		HashMap<String, String> predval = this.getPredicateValuesMap();
+		for (Quadruple quadruple : quads) {
+			if (quadruple.getPredicate().getURI().toString().contains(key)) {
+				if (quadruple.getObject().isLiteral()) {
+					predval.put(key, quadruple.getObject().getLiteral()
+							.toString());
+					System.out.println("getting ---"
+							+ quadruple.getObject().getLiteral().toString());
 				}
+				if (quadruple.getObject().isURI()) {
+					predval.put(key, quadruple.getObject().getURI().toString());
+					System.out.println("getting --- "
+							+ quadruple.getObject().getURI().toString());
+				}
+
 			}
-			//set a new hash map for the current event, 
-			//for the next notification the hash map is reset 
-			setPredicateValuesMap(predval);
 		}
+		// set a new hash map for the current event,
+		// for the next notification the hash map is reset
+		setPredicateValuesMap(predval);
+	}
 
-		private HashMap<String,String> predicateValuesMap= new HashMap<String,String>();
+	private HashMap<String, String> predicateValuesMap = new HashMap<String, String>();
 
-		public HashMap<String, String> getPredicateValuesMap() {
-			return predicateValuesMap;
-		}
+	public HashMap<String, String> getPredicateValuesMap() {
+		return predicateValuesMap;
+	}
 
-		public void setPredicateValuesMap(HashMap<String, String> predicateValuesMap) {
-			this.predicateValuesMap = predicateValuesMap;
-		}
-		
+	public void setPredicateValuesMap(HashMap<String, String> predicateValuesMap) {
+		this.predicateValuesMap = predicateValuesMap;
+	}
+
 }
