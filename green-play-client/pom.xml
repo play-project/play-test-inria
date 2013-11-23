@@ -1,0 +1,251 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>fr.inria.greenservices</groupId>
+	<artifactId>playsubscriber</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<finalName>greenPlayClient</finalName>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>fr.inria.greenservices.playsubscriber.GreenPlayClient</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-my-jar-with-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Do not deploy this artefact to maven repo, it is very big. :stuehmer -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<properties>
+		<cxf.version>2.5.4</cxf.version>
+		<jersey.version>2.3.1</jersey.version>
+		<eclipse.shortGroupId>play</eclipse.shortGroupId>
+		<eventcloud.version>1.7.0-SNAPSHOT</eventcloud.version>
+		<guava.version>15.0</guava.version>
+		<log4j.version>1.2.17</log4j.version>
+		<logback.version>1.0.13</logback.version>
+		<slf4j.version>1.7.5</slf4j.version>
+		<play.commons.version>1.2-SNAPSHOT</play.commons.version>
+	</properties>
+	<dependencies>
+	<dependency>
+      <groupId>fr.inria.eventcloud</groupId>
+      <artifactId>eventcloud-core</artifactId>
+      <version>1.7.0-SNAPSHOT</version>
+    </dependency>
+		<!-- <dependency>
+			<groupId>com.beust</groupId>
+			<artifactId>jcommander</artifactId>
+			<version>1.32</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.ow2.petals.dsb</groupId>
+			<artifactId>dsb-notification-httpclient</artifactId>
+			<version>1.0.0</version>
+		</dependency> -->
+
+		<dependency>
+			<groupId>org.ow2.petals.dsb</groupId>
+			<artifactId>dsb-soap</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.ow2.petals.dsb</groupId>
+			<artifactId>dsb-notification-service</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<!-- PLAY artifacts -->
+		<dependency>
+			<groupId>org.ow2.play</groupId>
+			<artifactId>play-serviceclient</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+		<groupId>org.ow2.play</groupId>
+		<artifactId>play-commons-eventformat</artifactId>
+		<version>1.2-SNAPSHOT</version>
+		</dependency>
+
+		<!-- <dependency>
+			<groupId>org.ow2.play</groupId>
+			<artifactId>play-commons-eventtypes</artifactId>
+			<version>${play.commons.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-log4j12</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>log4j</artifactId>
+					<groupId>log4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.ow2.play</groupId>
+			<artifactId>play-eventadapter-abstractrdfsender</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ow2.play</groupId>
+			<artifactId>play-eventadapter-abstractrdfreceiver</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency> -->
+
+
+		<!-- Loggers -->
+		<!-- in order to be able to use filters in the logback configuration side: -->
+		<!-- <dependency>
+			<groupId>org.codehaus.janino</groupId>
+			<artifactId>janino</artifactId>
+			<version>2.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency> -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
+		<!--Other -->
+		<!-- <dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency> -->
+
+	</dependencies>
+
+	<!-- -->
+	<!-- -->
+	<repositories>
+		<repository>
+			<id>maven2-repository.dev.java.net</id>
+			<url>http://download.java.net/maven/2</url>
+		</repository>
+		<repository>
+			<id>petalslink-public.release</id>
+			<name>PetalsLink Public Repository</name>
+			<url>http://maven.petalslink.com/public</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>petalslink-public.snapshot</id>
+			<name>PetalsLink Snapshot Public Repository</name>
+			<url>http://maven.petalslink.com/public-snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>sonatype-nexus-snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>semweb4j-repo</id>
+			<name>FZI Maven Repository</name>
+			<url>http://mavenrepo.fzi.de/semweb4j.org/repo</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>semweb4j-snapshots</id>
+			<name>FZI Maven Snapshot Repository</name>
+			<url>http://mavenrepo.fzi.de/semweb4j.org/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<!-- Repository to retrieve snapshots of the parent -->
+		<repository>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<id>ow2-snapshot</id>
+			<name>OW2 Snapshot Repository</name>
+			<url>http://repository.ow2.org/nexus/content/repositories/snapshots</url>
+		</repository>
+		<repository>
+			<id>apache-snapshots</id>
+			<name>apache-snapshots</name>
+			<url>https://repository.apache.org/content/repositories/snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+</project>
