@@ -89,6 +89,8 @@ public class GreenPlayClient {
 
 	protected static String mode = "mail";
 
+	private static String dsbSubscribeTo = "http://play.inria.fr:8084/petals/services/NotificationProducerPortService";
+
 	public String getSubscriptionId() {
 		return subscriptionId;
 	}
@@ -141,11 +143,11 @@ public class GreenPlayClient {
 		System.out.println("Got a client from playServiceEndpoint: "
 				+ playServiceEndpoint);
 		// System.out.println("client registry "+client.);
-		String dsbSubscribeTo = client.getEventGovernance()
+		/*String dsbSubscribeTo = client.getEventGovernance()
 				.createSubscriberTopic(topic);
 
 		System.out.println("You can subscribe to : " + dsbSubscribeTo);
-
+*/
 		// we can now subscribe to the DSB topic. The WSN subscribe endpoint has
 		// been returned by the governance operation call.
 		// You can use the standard WSN subscribe API or use the governance one
@@ -162,7 +164,7 @@ public class GreenPlayClient {
 		gpc.server = gpc.startServer(subscriberEndpoint, counter);
 		Subscription subscription = new Subscription();
 		subscription.setTopic(topic);
-		subscription.setProvider(dsbSubscribeTo);
+		subscription.setProvider(dsbSubscribeTo );
 		subscription.setSubscriber(subscriberEndpoint);
 		final Subscription result = client.getSubscriptionService().subscribe(
 				subscription);
